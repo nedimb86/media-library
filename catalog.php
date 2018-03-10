@@ -26,8 +26,9 @@ include("inc/header.php");
 
             <ul class="items">
                 <?php
-                foreach ($catalog as $id => $item) {
-                    echo get_item_html($id, $item);
+                $category = array_category($catalog, $section);
+                foreach ($category as $id) {
+                    echo get_item_html($id, $catalog[$id]);
                 }
                 ?>
             </ul>
