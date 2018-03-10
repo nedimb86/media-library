@@ -21,7 +21,11 @@ include("inc/header.php");
 
     <div class="section page">
         <div class="wrapper">
-
+          <div class="breadcrumbs">
+            <a href="catalog.php">Full Catalog </a> &gt;
+            <a href="catalog.php?cat=<?= strtolower($item['category'])?>"><?= $item['category'] ?> </a> &gt;
+            <?= $item['title'] ?>
+          </div>
             <div class="media-picture">
                 <span><img src="<?= $item['img']; ?>" alt="<?= $item['title']; ?>"></span>
             </div>
