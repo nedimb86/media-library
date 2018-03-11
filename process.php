@@ -10,3 +10,7 @@ $email_body .= "Email $email\n";
 $email_body .= "Details $details\n";
 echo $email_body;
 echo '</pre>';
+
+//to-do: Send an email
+
+header('location:thanks.php');
