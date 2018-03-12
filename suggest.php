@@ -1,8 +1,10 @@
 <?php
+include('inc/password.php');
 //Import the PHPMailer class into the global namespace
 use PHPMailer\PHPMailer\PHPMailer;
 require './vendor/phpmailer/src/PHPMailer.php';
 require './vendor/phpmailer/src/Exception.php';
+require './vendor/phpmailer/src/SMTP.php';
 
 
 if($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -31,9 +33,14 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
     $email_body .= "Details $details\n";
 
       $mail = new PHPMailer;
-      //It's important not to use the submitter's address as the from address as it's forgery,
-      //which will cause your messages to fail SPF checks.
-      //Use an address in your own domain as the from address, put the submitter's address in a reply-to
+    $mail->isSMTP();
+    $mail->SMTPDebug = 2;
+    $mail->Host = 'smtp.gmail.com';
+    $mail->Port = 587;
+    $mail->SMTPSecure = 'tls';
+    $mail->SMTPAuth = true;
+    $mail->Username = 'nedimb86@gmail.com';
+    $mail->Password = $PASSWORD;
       $mail->setFrom('nedimb86@gmail.com', $name);
       $mail->addReplyTo($email, $name);
       $mail->Subject = 'Suggestions from ' . $name;
