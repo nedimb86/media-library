@@ -23,7 +23,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     if(!PHPMailer::validateAddress($email)) {
       echo 'Invalid email';
-      exit
+      exit;
     }
 
     echo '<pre>';
