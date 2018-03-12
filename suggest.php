@@ -1,4 +1,9 @@
 <?php
+//Import the PHPMailer class into the global namespace
+use PHPMailer\PHPMailer\PHPMailer;
+require './vendor/phpmailer/src/PHPMailer.php';
+require './vendor/phpmailer/src/Exception.php';
+
 
 if($_SERVER['REQUEST_METHOD'] == 'POST') {
     $name = trim(filter_input(INPUT_POST, 'name', FILTER_SANITIZE_STRING));
@@ -14,6 +19,11 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
     if($address !== "") {
       echo "Invalid form";
       exit;
+    }
+
+    if(!PHPMailer::validateAddress($email)) {
+      echo 'Invalid email';
+      exit
     }
 
     echo '<pre>';
