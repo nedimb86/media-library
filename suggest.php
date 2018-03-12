@@ -26,15 +26,21 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
       exit;
     }
 
-    echo '<pre>';
     $email_body = "Name $name\n";
     $email_body .= "Email $email\n";
     $email_body .= "Details $details\n";
-    echo $email_body;
-    echo '</pre>';
 
-    //to-do: Send an email
-
+      $mail = new PHPMailer;
+      //It's important not to use the submitter's address as the from address as it's forgery,
+      //which will cause your messages to fail SPF checks.
+      //Use an address in your own domain as the from address, put the submitter's address in a reply-to
+      $mail->setFrom('nedimb86@gmail.com', $name);
+      $mail->addReplyTo($email, $name);
+      $mail->Subject = 'Suggestions from ' . $name;
+      $mail->Body = $email_body;
+      if (!$mail->send()) {
+          echo "Mailer Error: " . $mail->ErrorInfo;
+      }
     header('Location: suggest.php?status=thanks');
 }
 $pageTitle = 'Suggest a Media Item';
