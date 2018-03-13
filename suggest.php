@@ -10,11 +10,16 @@ require './vendor/phpmailer/src/SMTP.php';
 if($_SERVER['REQUEST_METHOD'] == 'POST') {
     $name = trim(filter_input(INPUT_POST, 'name', FILTER_SANITIZE_STRING));
     $email = trim(filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL));
+    $category = trim(filter_input(INPUT_POST, 'category', FILTER_SANITIZE_STRING));
+    $title = trim(filter_input(INPUT_POST, 'title', FILTER_SANITIZE_STRING));
+    $format = trim(filter_input(INPUT_POST, 'format', FILTER_SANITIZE_STRING));
+    $genre = trim(filter_input(INPUT_POST, 'genre', FILTER_SANITIZE_STRING));
+    $year = trim(filter_input(INPUT_POST, 'year', FILTER_SANITIZE_NUMBER_INT));
     $details = trim(filter_input(INPUT_POST, 'details', FILTER_SANITIZE_SPECIAL_CHARS));
     $address = trim(filter_input(INPUT_POST, 'address', FILTER_SANITIZE_STRING));
 
-    if ($name == "" || $email == "" || $details == ""){
-      echo 'Please fill in required fields: Name, Email and Details!';
+    if ($name == "" || $email == "" || $category == "" || $title = ""){
+      echo 'Please fill in required fields: Name, Email, Category and Title!';
       exit;
     }
 
@@ -30,6 +35,12 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     $email_body = "Name $name\n";
     $email_body .= "Email $email\n";
+    $email_body .= "\n\nSuggested Item\n\n0";
+    $email_body .= "Category $category\n";
+    $email_body .= "Title $title\n";
+    $email_body .= "Format $format\n";
+    $email_body .= "Genre $genre\n";
+    $email_body .= "Year $year\n";
     $email_body .= "Details $details\n";
 
       $mail = new PHPMailer;
@@ -70,15 +81,15 @@ include("inc/header.php");
     <form action="suggest.php" method="post">
       <table>
         <tr>
-          <th><label for="name">Name</label></th>
+          <th><label for="name">Name (required)</label></th>
           <td><input type="text" id="name" name="name"></td>
         </tr>
         <tr>
-          <th><label for="email">Email</label></th>
+          <th><label for="email">Email (required)</label></th>
           <td><input type="text" id="email" name="email"></td>
         </tr>
         <tr>
-          <th><label for="category">Category</label></th>
+          <th><label for="category">Category (required)</label></th>
           <td>
             <select id="category" name="category">
               <option value="">Select One</option>
@@ -89,7 +100,7 @@ include("inc/header.php");
           </td>
         </tr>
         <tr>
-          <th><label for="title">Title</label></th>
+          <th><label for="title">Title (required)</label></th>
           <td><input type="text" id="title" name="title"></td>
         </tr>
         <tr>
