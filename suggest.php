@@ -41,12 +41,14 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
     $mail->SMTPAuth = true;
     $mail->Username = 'nedimb86@gmail.com';
     $mail->Password = $PASSWORD;
-      $mail->setFrom('nedimb86@gmail.com', $name);
+      $mail->setFrom($email, $name);
+      $mail->addAddress('nedimb86@gmail.com', 'Nedim Becirovic');
       $mail->addReplyTo($email, $name);
       $mail->Subject = 'Suggestions from ' . $name;
       $mail->Body = $email_body;
       if (!$mail->send()) {
           echo "Mailer Error: " . $mail->ErrorInfo;
+          exit;
       }
     header('Location: suggest.php?status=thanks');
 }
