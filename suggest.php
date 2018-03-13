@@ -22,11 +22,11 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
       $error_message = 'Please fill in required fields: Name, Email, Category and Title!';
     }
 
-    if($address !== "") {
+    if(!isset($error_message) && $address !== "") {
       $error_message = "Invalid form";
     }
 
-    if(!PHPMailer::validateAddress($email)) {
+    if(!isset($error_message) && !PHPMailer::validateAddress($email)) {
       $error_message = 'Invalid email';
     }
 
@@ -73,10 +73,12 @@ include("inc/header.php");
     <?php
     if(isset($_GET['status']) && $_GET['status'] == 'thanks') {
       echo '    <p>Thanks for the email! I&rsquo;ll check out suggestion shortly!</p>';
-    } else { ?>
-
-    <p>If you think there is something I&rsquo;m missing, let me know! Complete the form to send me an email.</p>
-
+    } else {
+      if(isset($error_message)) {
+        echo "<p class='message'>$error_message</p>";
+      } else {
+        echo ' <p>If you think there is something I&rsquo;m missing, let me know! Complete the form to send me an email.</p>';
+      } ?>
     <form action="suggest.php" method="post">
       <table>
         <tr>
