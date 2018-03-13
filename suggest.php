@@ -19,49 +19,48 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
     $address = trim(filter_input(INPUT_POST, 'address', FILTER_SANITIZE_STRING));
 
     if ($name == "" || $email == "" || $category == "" || $title = ""){
-      echo 'Please fill in required fields: Name, Email, Category and Title!';
-      exit;
+      $error_message = 'Please fill in required fields: Name, Email, Category and Title!';
     }
 
     if($address !== "") {
-      echo "Invalid form";
-      exit;
+      $error_message = "Invalid form";
     }
 
     if(!PHPMailer::validateAddress($email)) {
-      echo 'Invalid email';
-      exit;
+      $error_message = 'Invalid email';
     }
 
-    $email_body = "Name $name\n";
-    $email_body .= "Email $email\n";
-    $email_body .= "\n\nSuggested Item\n\n0";
-    $email_body .= "Category $category\n";
-    $email_body .= "Title $title\n";
-    $email_body .= "Format $format\n";
-    $email_body .= "Genre $genre\n";
-    $email_body .= "Year $year\n";
-    $email_body .= "Details $details\n";
+    if(!isset($error_message)) {
+        $email_body = "Name $name\n";
+        $email_body .= "Email $email\n";
+        $email_body .= "\n\nSuggested Item\n\n0";
+        $email_body .= "Category $category\n";
+        $email_body .= "Title $title\n";
+        $email_body .= "Format $format\n";
+        $email_body .= "Genre $genre\n";
+        $email_body .= "Year $year\n";
+        $email_body .= "Details $details\n";
 
-      $mail = new PHPMailer;
-    $mail->isSMTP();
-    $mail->SMTPDebug = 2;
-    $mail->Host = 'smtp.gmail.com';
-    $mail->Port = 587;
-    $mail->SMTPSecure = 'tls';
-    $mail->SMTPAuth = true;
-    $mail->Username = 'nedimb86@gmail.com';
-    $mail->Password = $PASSWORD;
-      $mail->setFrom($email, $name);
-      $mail->addAddress('nedimb86@gmail.com', 'Nedim Becirovic');
-      $mail->addReplyTo($email, $name);
-      $mail->Subject = 'Suggestions from ' . $name;
-      $mail->Body = $email_body;
-      if (!$mail->send()) {
-          echo "Mailer Error: " . $mail->ErrorInfo;
-          exit;
-      }
-    header('Location: suggest.php?status=thanks');
+        $mail = new PHPMailer;
+        $mail->isSMTP();
+        $mail->SMTPDebug = 2;
+        $mail->Host = 'smtp.gmail.com';
+        $mail->Port = 587;
+        $mail->SMTPSecure = 'tls';
+        $mail->SMTPAuth = true;
+        $mail->Username = 'nedimb86@gmail.com';
+        $mail->Password = $PASSWORD;
+        $mail->setFrom($email, $name);
+        $mail->addAddress('nedimb86@gmail.com', 'Nedim Becirovic');
+        $mail->addReplyTo($email, $name);
+        $mail->Subject = 'Suggestions from ' . $name;
+        $mail->Body = $email_body;
+        if ($mail->send()) {
+            header('Location: suggest.php?status=thanks');
+            exit;
+        }
+        $error_message = "Mailer Error: " . $mail->ErrorInfo;
+    }
 }
 $pageTitle = 'Suggest a Media Item';
 $section = "suggest";
