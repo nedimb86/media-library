@@ -4,8 +4,8 @@
   $section = null;
 
   include("inc/header.php");
-  include('inc/data.php');
   include('inc/functions.php');
+  $catalog = get_full_catalog();
 
 ?>
 

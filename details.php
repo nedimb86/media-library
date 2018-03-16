@@ -1,6 +1,6 @@
 <?php
-include('inc/data.php');
 include('inc/functions.php');
+$catalog = get_full_catalog();
 
 if(isset($_GET["id"])) {
     $id = $_GET['id'];
