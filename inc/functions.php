@@ -1,10 +1,130 @@
 <?php
 
-function get_full_catalog() {
+function get_catalog_count($category = null, $search = null) {
+    include('connection.php');
+    $category = strtolower($category);
+    try {
+        $sql = "SELECT COUNT(media_id) FROM Media";
+        if(!empty($search)){
+            $results = $db->prepare($sql . " WHERE title LIKE ?");
+            $results->bindValue(1, '%'. $search . '%', PDO::PARAM_STR);
+        } else if(!empty($category)){
+            $results = $db->prepare($sql . " WHERE LOWER(category) = ?");
+            $results->bindParam(1, $category, PDO::PARAM_STR);
+        } else {
+            $results = $db->prepare($sql);
+        }
+        $results->execute();
+    } catch (Exception $e) {
+        echo 'Could not retrieve number of elements';
+        exit;
+    }
+    var_dump($results);
+    $count = $results->fetchColumn(0);
+    return $count;
+}
+
+function get_full_catalog($limit = null, $offset = 0) {
     include('connection.php');
 
     try {
-        $results = $db->query('SELECT media_id, title, category, img FROM Media');
+        $sql = 'SELECT media_id, title, category, img 
+              FROM Media
+              ORDER BY REPLACE(
+                  REPLACE(
+                    REPLACE(title, \'The \', \'\'), \'A \', \'\'
+                    ), \'An \', \'\'
+                )';
+        if(is_integer($limit)){
+            $results = $db->prepare($sql . " LIMIT ? OFFSET ?");
+            $results->bindParam(1,$limit,PDO::PARAM_INT);
+            $results->bindParam(2,$offset,PDO::PARAM_INT);
+        } else {
+            $results = $db->prepare($sql);
+        }
+        $results->execute();
+
+    } catch (Exception $e) {
+        echo 'Cannot retrieve full catalog';
+        exit;
+    }
+
+    $catalog = $results->fetchAll(PDO::FETCH_ASSOC);
+    return $catalog;
+}
+
+function get_section_catalog($section, $limit = null, $offset = 0) {
+    include('connection.php');
+    $section = strtolower($section);
+    try {
+
+        $sql = "SELECT media_id, title, category, img 
+              FROM Media
+              WHERE LOWER(category) = ?
+              ORDER BY REPLACE(
+                  REPLACE(
+                    REPLACE(title, 'The ', ''), 'A ', ''
+                    ), 'An ', ''
+                )";
+        if(is_integer($limit)){
+            $results = $db->prepare($sql . " LIMIT ? OFFSET ?");
+            $results->bindParam(1, $section, PDO::PARAM_STR);
+            $results->bindParam(2,$limit,PDO::PARAM_INT);
+            $results->bindParam(3,$offset,PDO::PARAM_INT);
+        } else {
+            $results = $db->prepare($sql);
+            $results->bindParam(1, $section, PDO::PARAM_STR);
+        }
+        $results->execute();
+    } catch (Exception $e) {
+        echo 'Cannot retrieve full catalog';
+        exit;
+    }
+
+    $catalog = $results->fetchAll(PDO::FETCH_ASSOC);
+    return $catalog;
+}
+function search_catalog($search, $limit = null, $offset = 0) {
+    include('connection.php');
+    $search = strtolower($search);
+    try {
+        $sql = "SELECT media_id, title, category, img 
+              FROM Media
+              WHERE LOWER(title) LIKE ?
+              ORDER BY REPLACE(
+                  REPLACE(
+                    REPLACE(title, 'The ', ''), 'A ', ''
+                    ), 'An ', ''
+                )";
+        if(is_integer($limit)){
+            $results = $db->prepare($sql . " LIMIT ? OFFSET ?");
+            $results->bindValue(1, "%" . $search ."%", PDO::PARAM_STR);
+            $results->bindParam(2,$limit,PDO::PARAM_INT);
+            $results->bindParam(3,$offset,PDO::PARAM_INT);
+        } else {
+            $results = $db->prepare($sql);
+            $results->bindValue(1,  "%" . $search ."%", PDO::PARAM_STR);
+        }
+        $results->execute();
+    } catch (Exception $e) {
+        echo 'Cannot retrieve full catalog';
+        exit;
+    }
+
+    $catalog = $results->fetchAll(PDO::FETCH_ASSOC);
+    return $catalog;
+}
+
+function random_catalog() {
+    include('connection.php');
+
+    try {
+        $results = $db->query(
+            'SELECT media_id, title, category, img 
+              FROM Media
+              ORDER BY RANDOM()
+              LIMIT 4
+              ');
     } catch (Exception $e) {
         echo 'Cannot retrieve full catalog';
         exit;
@@ -56,9 +176,9 @@ function get_single_item($id) {
     return $item;
 }
 
-function get_item_html($id, $item) {
+function get_item_html($item) {
     $output = '<li><a href="details.php?id='
-        . $id . '" ><img src="'
+        . $item['media_id'] . '" ><img src="'
         . $item['img'] . '" alt="'
         . $item['title'] .'"><p>View More</p></a></li>';
     return $output;
@@ -77,4 +197,8 @@ function array_category($catalog, $category) {
     }
     asort($output);
     return array_keys($output);
+}
+
+function get_genres_array($category = null){
+
 }

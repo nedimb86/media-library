@@ -5,7 +5,6 @@
 
   include("inc/header.php");
   include('inc/functions.php');
-  $catalog = get_full_catalog();
 
 ?>
 
@@ -17,9 +16,9 @@
 
 								<ul class="items">
                     <?php
-                    $random = array_rand($catalog, 4);
-                    foreach ($random as $id) {
-                        echo get_item_html($id, $catalog[$id]);
+                    $random = random_catalog();
+                    foreach ($random as $item) {
+                        echo get_item_html($item);
                     }
                     ?>
 		            </ul>

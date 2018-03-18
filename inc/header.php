@@ -9,7 +9,7 @@
 
     <div class="wrapper">
 
-        <h1 class="branding-title"><a href="">Personal Media Library</a></h1>
+        <h1 class="branding-title"><a href="index.php">Personal Media Library</a></h1>
 
         <ul class="nav">
             <li class="books<?php if($section == "books") { echo ' on'; } ?>"><a href="catalog.php?cat=books">Books</a></li>
@@ -21,5 +21,11 @@
     </div>
 
 </div>
-
+<div class="search">
+  <form action="catalog.php" method="get">
+    <label for="s">Search:</label>
+    <input type="text" name="s" id="s">
+    <input type="submit" value="Go">
+  </form>
+</div>
 <div id="content">
