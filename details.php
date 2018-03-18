@@ -1,15 +1,12 @@
 <?php
 include('inc/functions.php');
-$catalog = get_full_catalog();
 
 if(isset($_GET["id"])) {
-    $id = $_GET['id'];
-    if(isset($catalog[$id])) {
-        $item = $catalog[$id];
-    }
+    $id = filter_input(INPUT_GET,'id',FILTER_SANITIZE_NUMBER_INT);
+    $item = get_single_item($id);
 }
 
-if(!isset($item)) {
+if(empty($item)) {
     header('location:catalog.php');
     exit;
 }
@@ -52,7 +49,7 @@ include("inc/header.php");
               <?php if(strtolower($item['category']) == 'books')  { ?>
                 <tr>
                   <th>Authors</th>
-                  <td><?= implode(', ', $item['authors']) ?></td>
+                  <td><?= implode(', ', $item['author']) ?></td>
                 </tr>
                 <tr>
                   <th>Publisher</th>
@@ -65,21 +62,21 @@ include("inc/header.php");
               <?php } else if(strtolower($item['category']) == 'movies')  { ?>
                 <tr>
                   <th>Director</th>
-                  <td><?= $item['director'] ?></td>
+                  <td><?= implode(', ', $item['director']) ?></td>
                 </tr>
                 <tr>
                   <th>Writers</th>
-                  <td><?= implode(', ', $item['writers']) ?></td>
+                  <td><?= implode(', ', $item['writer']) ?></td>
                 <tr>
                 <tr>
                   <th>Stars</th>
-                  <td><?= implode(', ', $item['stars']) ?></td>
+                  <td><?= implode(', ', $item['star']) ?></td>
                 <tr>
               <?php } else if(strtolower($item['category']) == 'music')  { ?>
 
               <tr>
                 <th>Artist</th>
-                <td><?= $item['artist'] ?></td>
+                <td><?= implode(', ', $item['artist']) ?></td>
               <tr>
               <?php } ?>
             </table>
